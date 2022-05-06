@@ -1,4 +1,5 @@
 import { Router } from "express";
+import userExtractor from "../middleware/userExtractor.js";
 import {
   getImage,
   getImages,
@@ -12,7 +13,7 @@ router.get("/:id", getImage);
 //all images
 router.get("/", getImages);
 //create
-router.post("/", createImage);
+router.post("/", userExtractor, createImage);
 //update
 router.put("/:id", updateImage);
 //delete

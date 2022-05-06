@@ -1,5 +1,6 @@
 import Image from "../models/Image.js";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 export const getImage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -22,27 +23,28 @@ export const getImages = async (req, res) => {
     res.status(200).json({ content: images });
   } catch (error) {}
 };
-export const createImage = async (req, res) => {
+export const createImage = async (req, res, next) => {
   try {
-    const { name, url, userId } = req.body;
-    console.log(userId);
-    if (!name || !url || !userId)
-      return res.status(400).json({ error: "you must send the all data" });
+    const { userId } = req;
+    const { name, url } = req.body;
     const user = await User.findById(userId);
+
+    if (!name || !url)
+      return res.status(400).json({ error: "you must send the all data" });
+
     const newImage = new Image({
       name,
       url,
       userId: user._id,
     });
     const savedImage = await newImage.save();
-    console.log(user);
     user.images = user.images.concat(savedImage._id);
     await user.save();
     res
       .status(201)
       .json({ message: "the image was created", content: newImage });
-  } catch (err) {
-    return res.status(400).json({ error: "Error in create image" });
+  } catch (exception) {
+    next(exception);
   }
 };
 
