@@ -40,5 +40,8 @@
       "^variables$": "variables/dist/cjs",
       "^[NAME OF MODULE YOU WANT TO IMPORT]$": "[NAME OF MODULE YOU WANT TO IMPORT]/dist/cjs"
     }
+  },
+  "engines": {
+    "node": "17.1.0"
   }
 }
