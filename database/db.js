@@ -5,7 +5,7 @@ export const connectDB = async () => {
   try {
     const db = await mongoose.connect(
       NODE_ENV == "test" ? DB_URI_TEST : DB_URI,
-      { useNewUrlParser: true, useCreateIndex: true }
+      { useNewUrlParser: true }
     );
     console.log("connect to", db.connection.name);
   } catch (err) {
