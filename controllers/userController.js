@@ -4,8 +4,8 @@ import User from "../models/User.js";
 export const getUser = async (req, res) => {
   console.log(req.params);
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId);
+    const username = req.params.username;
+    const user = await User.findOne({ username });
     if (!user) throw new Error("Image doesn't exist. Look the ID");
     res.status(200).json({ content: user });
   } catch (err) {
