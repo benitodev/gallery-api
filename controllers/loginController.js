@@ -6,7 +6,6 @@ export const loginUser = async (req, res) => {
   if (!username || !password)
     res.status(400).json({ error: "data is missing, fill everthing please" });
   const user = await User.findOne({ username });
-  console.log(user);
   const passwordCorrect =
     user === null ? false : await bcrypt.compare(password, user.password);
   if (!(user && passwordCorrect))
@@ -26,5 +25,3 @@ export const loginUser = async (req, res) => {
     token,
   });
 };
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlbml0b2thIiwiaWQiOiI2MjcwOWMxZTI2OWE2NzdhY2QzYzE0Y2IiLCJpYXQiOjE2NTE3ODkzMTJ9.4v_8oaQOQhS3XWJ9IiZ1UOfqPAo4vsKOn1gPSC5QTaU

@@ -35,7 +35,7 @@ export const createImage = async (req, res, next) => {
     const newImage = new Image({
       name,
       url,
-      userId: user._id,
+      userId: user.username,
     });
     const savedImage = await newImage.save();
     user.images = user.images.concat(savedImage._id);
