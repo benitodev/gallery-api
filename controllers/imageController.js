@@ -15,11 +15,13 @@ export const getImage = async (req, res) => {
 
 export const getImages = async (req, res) => {
   try {
-    const images = await Image.find({}).populate("userId", {
+    console.log("hola soy get IMAGES");
+    const images = await Image.find({}).populate("user", {
       username: 1,
       name: 1,
       _id: 0,
     });
+    console.log(images, "IMAGES");
     res.status(200).json({ content: images });
   } catch (error) {}
 };
@@ -34,9 +36,10 @@ export const createImage = async (req, res, next) => {
     const newImage = new Image({
       name,
       url,
-      user: user.username,
+      user: user._id,
     });
     const savedImage = await newImage.save();
+    console.log(savedImage);
     user.images = user.images.concat(savedImage._id);
     await user.save();
     res

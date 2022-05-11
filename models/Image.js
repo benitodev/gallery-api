@@ -13,7 +13,7 @@ const imageSchema = new Schema({
   },
   user: [
     {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
