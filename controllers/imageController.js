@@ -31,11 +31,10 @@ export const createImage = async (req, res, next) => {
 
     if (!name || !url)
       return res.status(400).json({ error: "you must send the all data" });
-
     const newImage = new Image({
       name,
       url,
-      userId: user.username,
+      user: user.username,
     });
     const savedImage = await newImage.save();
     user.images = user.images.concat(savedImage._id);
