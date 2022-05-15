@@ -6,10 +6,9 @@ const imageSchema = new Schema({
     required: true,
     trim: true,
   },
-  url: {
-    type: String,
-    required: true,
-    trim: true,
+  image: {
+    url: String,
+    public_id: String,
   },
   user: [
     {

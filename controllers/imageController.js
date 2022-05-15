@@ -1,6 +1,7 @@
 import Image from "../models/Image.js";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";
+import { uploadImage } from "../libs/cloudinary.js";
+import fs from "fs-extra";
 export const getImage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -25,28 +26,46 @@ export const getImages = async (req, res) => {
     res.status(200).json({ content: images });
   } catch (error) {}
 };
-export const createImage = async (req, res, next) => {
-  try {
-    const { userId } = req;
-    const { name, url } = req.body;
-    const user = await User.findById(userId);
 
-    if (!name || !url)
+export const createImage = async (req, res) => {
+  try {
+    if (!req.body) {
+      return res.status(400).send("no body");
+    }
+
+    const { userId } = req;
+    const { imageName } = req.body;
+    if (!req.files || Object.keys(req.files).length === 0) {
+      return res.status(400).send("no files were uploaded.");
+    }
+
+    const cloudinaryRes = await uploadImage(
+      req.files.selectedFile.tempFilePath
+    );
+
+    await fs.remove(req.files.selectedFile.tempFilePath);
+
+    const cloudinaryImage = {
+      url: cloudinaryRes.secure_url,
+      public_id: cloudinaryRes.public_id,
+    };
+    const user = await User.findOne({ userId });
+    if (!imageName)
       return res.status(400).json({ error: "you must send the all data" });
     const newImage = new Image({
-      name,
-      url,
-      user: user._id,
+      name: imageName,
+      user: user.id,
+      image: cloudinaryImage,
     });
+    console.log(newImage);
     const savedImage = await newImage.save();
-    console.log(savedImage);
     user.images = user.images.concat(savedImage._id);
     await user.save();
     res
       .status(201)
       .json({ message: "the image was created", content: newImage });
   } catch (exception) {
-    next(exception);
+    console.log(exception);
   }
 };
 

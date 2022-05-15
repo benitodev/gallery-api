@@ -12,6 +12,7 @@ const router = Router();
 router.get("/:id", getImage);
 //all images
 router.get("/", getImages);
+
 //create
 router.post("/", userExtractor, createImage);
 //update
