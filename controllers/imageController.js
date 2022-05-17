@@ -57,7 +57,6 @@ export const createImage = async (req, res) => {
       user: user.id,
       image: cloudinaryImage,
     });
-    console.log(newImage);
     const savedImage = await newImage.save();
     user.images = user.images.concat(savedImage._id);
     await user.save();
@@ -86,10 +85,20 @@ export const updateImage = async (req, res) => {
 };
 export const deleteImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const imageToDelete = await Image.findByIdAndDelete(id);
-    console.log(imageToDelete);
-    if (!imageToDelete) return res.sendStatus(404);
+    if (!req.body) {
+      return res.status(400).send("no body");
+    }
+    const { userId } = req;
+    const imageId = req.params.id;
+    const imageToDelete = await Image.findByIdAndDelete(imageId);
+    // if (!imageToDelete) return res.sendStatus(404);
+    const user = await User.findById({ _id: userId });
+    let itemToRemove = user.images.find((image) => imageId);
+    if (itemToRemove) {
+      user.images.pull(itemToRemove);
+      await user.save();
+    }
+
     res.status(204).json({ message: "image has been deleted" });
   } catch (err) {
     return res.status(404).json({ error: "Image doesn't exist. Look the ID" });

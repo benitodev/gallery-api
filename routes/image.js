@@ -16,8 +16,8 @@ router.get("/", getImages);
 //create
 router.post("/", userExtractor, createImage);
 //update
-router.put("/:id", updateImage);
+router.put("/:id", userExtractor, updateImage);
 //delete
-router.delete("/:id", deleteImage);
+router.delete("/:id", userExtractor, deleteImage);
 
 export default router;
