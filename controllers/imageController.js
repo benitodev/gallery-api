@@ -16,15 +16,25 @@ export const getImage = async (req, res) => {
 
 export const getImages = async (req, res) => {
   try {
-    console.log("hola soy get IMAGES");
     const images = await Image.find({}).populate("user", {
       username: 1,
       name: 1,
       _id: 0,
     });
-    console.log(images, "IMAGES");
     res.status(200).json({ content: images });
-  } catch (error) {}
+  } catch (err) {
+    return res.status(404).json({ error: err.message });
+  }
+};
+
+export const getRandomImages = async (req, res) => {
+  try {
+    const images = await Image.find({}).limit(3);
+    console.log(images);
+    res.status(200).json({ content: images });
+  } catch (err) {
+    return res.status(404).json({ error: err.message });
+  }
 };
 
 export const createImage = async (req, res) => {
@@ -69,6 +79,7 @@ export const createImage = async (req, res) => {
 };
 
 export const updateImage = async (req, res) => {
+  console.log("pdateee");
   const id = req.params.id;
   try {
     if (Object.keys(req.body).length === 0)
@@ -93,7 +104,9 @@ export const deleteImage = async (req, res) => {
     const imageToDelete = await Image.findByIdAndDelete(imageId);
     // if (!imageToDelete) return res.sendStatus(404);
     const user = await User.findById({ _id: userId });
-    let itemToRemove = user.images.find((image) => imageId);
+    let itemToRemove = user.images.find((image) => image == imageId);
+
+    console.log(itemToRemove);
     if (itemToRemove) {
       user.images.pull(itemToRemove);
       await user.save();
