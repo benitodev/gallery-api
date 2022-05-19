@@ -2,10 +2,10 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 
 export const getUser = async (req, res) => {
-  console.log(req.params);
   try {
-    const id = req.params.id;
-    const user = await User.findOne({ id });
+    const id = req.params.username;
+
+    const user = await User.findOne({ _id: id });
     if (!user) throw new Error("Image doesn't exist. Look the ID");
     res.status(200).json({ content: user });
   } catch (err) {

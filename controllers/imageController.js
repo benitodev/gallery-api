@@ -44,6 +44,7 @@ export const createImage = async (req, res) => {
     }
 
     const { userId } = req;
+
     const { imageName } = req.body;
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send("no files were uploaded.");
@@ -59,7 +60,8 @@ export const createImage = async (req, res) => {
       url: cloudinaryRes.secure_url,
       public_id: cloudinaryRes.public_id,
     };
-    const user = await User.findOne({ userId });
+    const user = await User.findOne({ _id: userId });
+    console.log(user);
     if (!imageName)
       return res.status(400).json({ error: "you must send the all data" });
     const newImage = new Image({
