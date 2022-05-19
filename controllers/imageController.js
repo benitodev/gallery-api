@@ -79,12 +79,47 @@ export const createImage = async (req, res) => {
 };
 
 export const updateImage = async (req, res) => {
-  console.log("pdateee");
   const id = req.params.id;
   try {
-    if (Object.keys(req.body).length === 0)
-      return res.status(400).json({ error: "missing content" });
-    const uptadedImage = await Image.findByIdAndUpdate(id, req.body, {
+    const getBody = async () => {
+      let body = {};
+      if (req.files && req.body) {
+        const image = req.files.image;
+        const cloudinaryRes = await uploadImage(image.tempFilePath);
+
+        await fs.remove(image.tempFilePath);
+
+        const cloudinaryImage = {
+          url: cloudinaryRes.secure_url,
+          public_id: cloudinaryRes.public_id,
+        };
+        const name = req.body.name;
+        body = { image: cloudinaryImage, name };
+
+        return body;
+      }
+      if (req.files) {
+        const image = req.files.image;
+        const cloudinaryRes = await uploadImage(image.tempFilePath);
+
+        await fs.remove(image.tempFilePath);
+
+        const cloudinaryImage = {
+          url: cloudinaryRes.secure_url,
+          public_id: cloudinaryRes.public_id,
+        };
+        body = { image: cloudinaryImage };
+        return body;
+      }
+      if (Object.keys(req.body).length > 0) {
+        const name = req.body.name;
+        body = { name };
+        return body;
+      }
+    };
+    const dataToUpdate = await getBody();
+    console.log(dataToUpdate);
+    const uptadedImage = await Image.findByIdAndUpdate(id, dataToUpdate, {
       new: true,
     });
     res
