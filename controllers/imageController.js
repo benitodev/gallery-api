@@ -6,7 +6,10 @@ export const getImage = async (req, res) => {
   try {
     const { id } = req.params;
     const image = await Image.findById(id);
-    if (!image) throw new Error("Image doesn't exist. Look the ID");
+    if (!image)
+      res
+        .status(404)
+        .json({ error: "the image doesn't exist or ID is missing" });
     res.status(200).json({ content: image });
   } catch (err) {
     console.log(err);
@@ -40,14 +43,14 @@ export const getRandomImages = async (req, res) => {
 export const createImage = async (req, res) => {
   try {
     if (!req.body) {
-      return res.status(400).send("no body");
+      return res.status(400).json({ error: "you must send the filename" });
     }
 
     const { userId } = req;
 
     const { imageName } = req.body;
     if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("no files were uploaded.");
+      return res.status(400).json({ error: "no files were uploaded." });
     }
 
     const cloudinaryRes = await uploadImage(
