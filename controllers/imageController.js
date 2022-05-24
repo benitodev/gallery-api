@@ -19,11 +19,7 @@ export const getImage = async (req, res) => {
 
 export const getImages = async (req, res) => {
   try {
-    const images = await Image.find({}).populate("user", {
-      username: 1,
-      name: 1,
-      _id: 0,
-    });
+    const images = await Image.find({});
     res.status(200).json({ content: images });
   } catch (err) {
     return res.status(404).json({ error: err.message });
@@ -45,7 +41,6 @@ export const createImage = async (req, res) => {
     if (!req.body) {
       return res.status(400).json({ error: "you must send the filename" });
     }
-
     const { userId } = req;
 
     const { imageName } = req.body;
@@ -66,7 +61,7 @@ export const createImage = async (req, res) => {
     const user = await User.findOne({ _id: userId });
     console.log(user);
     if (!imageName)
-      return res.status(400).json({ error: "you must send the all data" });
+      return res.status(404).json({ error: "you must send the all data" });
     const newImage = new Image({
       name: imageName,
       user: user.id,
