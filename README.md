@@ -6,9 +6,9 @@
 
 ## Features
 ### API
-- **Users**: https://github.com/benitodev/gallery-api/user
-- **Images**: https://github.com/benitodev/gallery-api/image
-- **Login**: https://github.com/benitodev/gallery-api/login
+- **Users**: https://web-production-f757.up.railway.app/user
+- **Images**: https://web-production-f757.up.railway.app/image
+- **Login**: https://web-production-f757.up.railway.app/login
 
 ### You can do: 
 - CRUD user 
